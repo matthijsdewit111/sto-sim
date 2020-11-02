@@ -42,7 +42,10 @@ def random_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations
             # give each sample a color dependent on n
             h = np.log(n)
             m = np.log(max_iterations)
-            colors.append([0, m-h, 0])
+            r = max(0, m - 4 * abs(h - 0.25 * m))
+            g = max(0, m - 4 * abs(h - 0.5 * m))
+            b = max(0, m - 4 * abs(h - 0.75 * m))
+            colors.append([r, g, b])
 
     fraction_in_set = samples_in_set / num_samples
     total_area = (real_bounds[1] - real_bounds[0]) * (imag_bounds[1] - imag_bounds[0])
