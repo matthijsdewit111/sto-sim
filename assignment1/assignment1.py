@@ -4,13 +4,13 @@
 
 import matplotlib.pyplot as plt
 import numpy as np
-from numba import jit
+from numba import njit
 from tqdm import tqdm
 
 rng = np.random.default_rng()
 
 
-@jit(nopython=True)
+@njit
 def mandelbrot(c, max_iterations):
     z = 0
     n = 0
