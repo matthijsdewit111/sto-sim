@@ -49,7 +49,7 @@ def random_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations
 
     fraction_in_set = samples_in_set / num_samples
     total_area = (real_bounds[1] - real_bounds[0]) * (imag_bounds[1] - imag_bounds[0])
-    print("estimated area using uniform random samples:", total_area * fraction_in_set)
+    calculated_area = total_area * fraction_in_set
 
     if plot_figures:
         print("plotting...")
@@ -57,13 +57,17 @@ def random_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations
         plt.scatter(x, y, s=1, c=colors/colors.max())
         plt.show()
 
+    return calculated_area
+
 
 if __name__ == "__main__":
     plot_figures = True
 
     max_iterations = 1000
+    num_samples = int(1e5)
 
     real_bounds = [-2, 0.5]
     imag_bounds = [-1.25, 1.25]
 
-    random_sampling_method(int(4e5), real_bounds, imag_bounds, max_iterations, plot_figures)
+    a = random_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations, plot_figures)
+    print("estimated area using uniform random samples:", a)
