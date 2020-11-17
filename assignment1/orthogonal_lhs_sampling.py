@@ -1,6 +1,8 @@
 # Names and UvAIDs:
 # Matthijs de Wit, 10628258
 # Menno Bruin, 11675225
+#
+# This file implements different sampling methods (LHS Orthogonal)
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -166,4 +168,3 @@ if __name__ == "__main__":
 
     with open('random_sampling_data', 'wb+') as f:
         pk.dump({"samples": samples, "means": means, "stds": stds}, f)
-
