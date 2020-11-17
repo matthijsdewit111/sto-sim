@@ -8,8 +8,8 @@ if __name__ == "__main__":
 
     real_A_M = 1.50659177
 
-    s_list = np.logspace(2, 6, 17)
-    i_list = np.logspace(2, 6, 17)
+    s_list = np.logspace(2, 6, 20)
+    i_list = np.logspace(2, 5, 20)
 
     X, Y = np.meshgrid(s_list, i_list)
 
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     for s in s_list:
         individual_results = []
         for _ in range(10):
-            a = random_sampling_method(int(s), real_bounds, imag_bounds, 10000, False)
+            a = random_sampling_method(int(s), real_bounds, imag_bounds, int(1e4), False)
             individual_results.append(a)
         s_std_results.append(np.std(individual_results))
         s_mean_results.append(np.mean(individual_results) - real_A_M)
@@ -35,7 +35,7 @@ if __name__ == "__main__":
         print(i)
         individual_results = []
         for _ in range(10):
-            a = random_sampling_method(10000, real_bounds, imag_bounds, int(i), False)
+            a = random_sampling_method(int(1e6), real_bounds, imag_bounds, int(i), False)
             individual_results.append(a)
         i_std_results.append(np.std(individual_results))
         i_mean_results.append(np.mean(individual_results) - real_A_M)
