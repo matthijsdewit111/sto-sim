@@ -177,12 +177,8 @@ def antithetic_sampling_method(num_samples, real_bounds, imag_bounds, max_iterat
     samples_in_set = 0
     for _ in tqdm(range(num_samples // 2), disable=True):
         # color = [rng.random(), rng.random(), rng.random()]
-        c1 = complex(rng.uniform(*real_bounds), rng.uniform(imag_bounds[0], 0))
-
-        if c1.imag < imag_center:
-            c2 = complex(c1.real, c1.imag + half_imag_width)
-        else:
-            c2 = complex(c1.real, c1.imag - half_imag_width)
+        c1 = complex(rng.uniform(*real_bounds), rng.uniform(0, imag_bounds[1]))
+        c2 = complex(c1.real, c1.imag - half_imag_width)
 
         n1 = mandelbrot(c1, max_iterations)
         if n1 == max_iterations:
@@ -350,11 +346,11 @@ if __name__ == "__main__":
         # previous estimate
         cv = -0.9248455094960547
 
-    a = random_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations, plot_figures)
-    print("estimated area (random):", a)
+    # a = random_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations, plot_figures)
+    # print("estimated area (random):", a)
 
     a = antithetic_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations, plot_figures)
     print("estimated area (antithetic):", a)
 
-    a = control_variate_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations, cv_circles, cv, plot_figures)
-    print("estimated area (control variate):", a)
+    # a = control_variate_sampling_method(num_samples, real_bounds, imag_bounds, max_iterations, cv_circles, cv, plot_figures)
+    # print("estimated area (control variate):", a)
