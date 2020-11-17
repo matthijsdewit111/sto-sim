@@ -1,3 +1,9 @@
+# Names and UvAIDs:
+# Matthijs de Wit, 10628258
+# Menno Bruin, 11675225
+#
+# This file is used for measuring the effects of the number of samples and the number of max_iterations
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -25,7 +31,7 @@ if __name__ == "__main__":
             individual_results.append(a)
         s_std_results.append(np.std(individual_results))
         s_mean_results.append(np.mean(individual_results) - real_A_M)
-    
+
     s_std_results = np.array(s_std_results)
     s_mean_results = np.array(s_mean_results)
 

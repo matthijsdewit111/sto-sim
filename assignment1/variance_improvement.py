@@ -1,8 +1,16 @@
+# Names and UvAIDs:
+# Matthijs de Wit, 10628258
+# Menno Bruin, 11675225
+#
+# This file is used for measuring the variance reduction for the methods implemented in assignment1.py
+
 import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 
-from assignment1 import random_sampling_method, antithetic_sampling_method, control_variate_sampling_method
+from assignment1 import (antithetic_sampling_method,
+                         control_variate_sampling_method,
+                         random_sampling_method)
 
 if __name__ == "__main__":
 

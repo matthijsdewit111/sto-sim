@@ -1,6 +1,8 @@
 # Names and UvAIDs:
 # Matthijs de Wit, 10628258
 # Menno Bruin, 11675225
+#
+# This file contains the different methods used for reducing variance in random sampling
 
 import matplotlib.pyplot as plt
 import numpy as np
