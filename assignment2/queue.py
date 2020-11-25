@@ -3,43 +3,45 @@ import random
 
 
 class Server:
-
-    def __init__(self, env, shortest_first=False):
+    def __init__(self, env, n):
         self.env = env
-        self.store = simpy.Store(env) if not shortest_first else simpy.PriorityStore(env)
+        self.resources = simpy.Resource(env, capacity=n)
+        # self.resources = simpy.PriorityResource(env, capacity=n)
 
-    def execute_request(self, value):
-        t = random.expovariate(1.0 / ARRIVAL_RATE)
-        yield self.env.timeout(t)
-        self.store.put(value)
-
-    def put(self, value):
-        self.env.process(self.execute_request(value))
-
-    def get(self):
-        return self.store.get()
+    def execute_job(self, id, service_time):
+        yield self.env.timeout(service_time)
 
 
-def transmitter(env, server):
+def job_generator(env, server):
     for i in range(NUM_REQUESTS):
-        yield env.timeout(5)
-        server.put(env.now)
+        j = job(env, i, server)
+        env.process(j)
+
+        # wait for next arrival event
+        yield env.timeout(ARRIVAL_RATE)
 
 
-def receiver(env, server):
-    for i in range(NUM_REQUESTS):
-        transmit_time = yield server.get()
-        print(f'Request handling time: {env.now - transmit_time:.2f}s')
+def job(env, id, server):
+    print(f"{id} arrives at {env.now}")
 
+    # request allocation of resource for job
+    # with server.resources.request(priority=10-id) as request:
+    with server.resources.request() as request:
+        yield request
+        print(f"{id} starts running at {env.now}")
 
-env = simpy.Environment()
+        # run job
+        yield env.process(server.execute_job(id, 10-id))
+        print(f"{id} finished at {env.now}")
+
 
 NUM_REQUESTS = 10
 ARRIVAL_RATE = 5  # new request every [x] seconds
+SERVICE_TIME = 6  # [x] second to complete job
 
-for n in [1, 2, 4]:
+for n in [1]:
     print(f"------------ n = {n} -------------")
-    server = Server(env)
-    env.process(transmitter(env, server))
-    env.process(receiver(env, server))
+    env = simpy.Environment()
+    server = Server(env, n)
+    env.process(job_generator(env, server))
     env.run()
