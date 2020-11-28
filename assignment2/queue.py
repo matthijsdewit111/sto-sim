@@ -26,7 +26,7 @@ def job_generator(env, server, arrival_rate, shortest_job_first=False):
 def job(env, id, server, shortest_job_first):
     # print(f"{id} arrives at {env.now:.1f}s")
 
-    t = random.uniform(MIN_SERVICE_TIME, MAX_SERVICE_TIME)
+    t = random.expovariate(1 / SERVICE_TIME)
 
     if shortest_job_first:
         request = server.resources.request(priority=t)
@@ -41,18 +41,18 @@ def job(env, id, server, shortest_job_first):
         # print(f"{id} finished at {env.now:.1f}s")
 
 
-NUM_REQUESTS = 1000
+NUM_REQUESTS = 100
 ARRIVAL_RATE = 5  # new request every [x] seconds
-MIN_SERVICE_TIME = 2
-MAX_SERVICE_TIME = 20
-SJF = False  # shortest job first
+SERVICE_TIME = 5
+MAX_SERVICE_TIME = 200
+SJF = True  # shortest job first
 
 average_waiting_times = []
 
 for n in [1, 2, 4]:
     arrival_rate = ARRIVAL_RATE / n
     print(f"\r------------ n = {n} -------------", end='')
-    for i in range(500):
+    for i in tqdm(range(500)):
         env = simpy.Environment()
         server = Server(env, n, shortest_job_first=SJF)
         env.process(job_generator(env, server, arrival_rate, shortest_job_first=SJF))
@@ -67,4 +67,6 @@ for n in [1, 2, 4]:
 plt.xlabel('Average Waiting Time')
 plt.ylabel('# Measurements')
 plt.legend()
+plt.ylim(0, 5)
+plt.xlim(0, 5/2)
 plt.show()
