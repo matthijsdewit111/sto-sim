@@ -1,3 +1,9 @@
+# Names and UvAIDs:
+# Matthijs de Wit, 10628258
+# Menno Bruin, 11675225
+#
+# This file contains the code to produce the plots for assignment 2
+
 import pickle
 import random
 
@@ -40,7 +46,7 @@ def job(env, id, server, srd, shortest_job_first):
         if d < 0.75:  # 0.75 * 0.5ST + 0.25 * 2.5ST = 1ST (combined mean = ST)
             t = random.expovariate(2/SERVICE_TIME)  # mean = 0.5 * ST
         else:
-            t = random.expovariate(2/(5 * SERVICE_TIME)) # mean = 2.5 * ST
+            t = random.expovariate(2/(5 * SERVICE_TIME))  # mean = 2.5 * ST
     else:
         print('invalid service rate distribution')
 
@@ -74,7 +80,7 @@ for sjf in ['False', 'True']:
     for n in [1, 2, 4]:
         print(f"\r------------ n = {n} -------------")
         average_waiting_times = []
-        arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load equal
+        arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
 
         for i in tqdm(range(repetitions)):
             waiting_times = []
@@ -106,7 +112,7 @@ for srd in ['D', 'E']:
 
     for n in [1, 2, 4]:
         print(f"\r------------ n = {n} -------------")
-        arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load equal
+        arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
         average_waiting_times = []
 
         for i in tqdm(range(repetitions)):
