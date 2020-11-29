@@ -74,7 +74,7 @@ SERVICE_TIME = 0.95  # mean job service time, comleted after [x] seconds
 repetitions = 500
 
 # Part 2 and 3 of assignment
-for sjf in ['False', 'True']:
+for sjf in [False, True]:
     print(f"sjf: {sjf}")
 
     for n in [1, 2, 4]:
@@ -102,8 +102,10 @@ for sjf in ['False', 'True']:
     plt.ylabel('# Measurements')
     plt.legend()
     plt.ylim(0, 1)
-    plt.xlim(0, 20)
-    plt.show()
+    plt.xlim(0, 10)
+    plt.savefig(f"M-M-{'SJF' if sjf else 'FIFO'}.png")
+    # plt.show()
+    plt.cla()
 
 
 # Part 4 of assignment
@@ -133,5 +135,7 @@ for srd in ['D', 'E']:
     plt.ylabel('# Measurements')
     plt.legend()
     plt.ylim(0, 1)
-    plt.xlim(0, 20)
-    plt.show()
+    plt.xlim(0, 10)
+    plt.savefig(f"M-{srd}-FIFO.png")
+    # plt.show()
+    plt.cla()
