@@ -68,9 +68,9 @@ def job(env, id, server, srd, shortest_job_first):
     waiting_times.append(waiting_time)
 
 
-NUM_REQUESTS = 100
+NUM_REQUESTS = 1000
 ARRIVAL_RATE = 1  # mean job arrival interval, once every [x] seconds
-SERVICE_TIME = 0.95  # mean job service time, comleted after [x] seconds
+SERVICE_TIME = 0.9  # mean job service time, comleted after [x] seconds
 repetitions = 500
 
 # Part 2 and 3 of assignment
@@ -95,14 +95,17 @@ for sjf in [False, True]:
             average_waiting_times.append(np.mean(waiting_times))
 
         sns.distplot(np.array(average_waiting_times), label=f'n={n}')
-        print("Mean waiting time:", np.mean(average_waiting_times))
-        print("Variance waiting times:", np.var(average_waiting_times))
+        mean = np.mean(average_waiting_times)
+        var = np.var(average_waiting_times)
+        print(f"Mean waiting time: {mean:.2f}")
+        print(f"Variance waiting times: {var:.2f}")
+        rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
+        print(f"recommended N: {rec_N}")
 
     plt.xlabel('Average Waiting Time')
     plt.ylabel('# Measurements')
     plt.legend()
-    plt.ylim(0, 1)
-    plt.xlim(0, 10)
+    # plt.xlim(0, 10)
     plt.savefig(f"M-M-{'SJF' if sjf else 'FIFO'}.png")
     # plt.show()
     plt.cla()
@@ -128,14 +131,17 @@ for srd in ['D', 'E']:
             average_waiting_times.append(np.mean(waiting_times))
 
         sns.distplot(np.array(average_waiting_times), label=f'n={n}')
-        print("Mean waiting time:", np.mean(average_waiting_times))
-        print("Variance waiting times:", np.var(average_waiting_times))
+        mean = np.mean(average_waiting_times)
+        var = np.var(average_waiting_times)
+        print(f"Mean waiting time: {mean:.2f}")
+        print(f"Variance waiting times: {var:.2f}")
+        rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
+        print(f"recommended N: {rec_N}")
 
     plt.xlabel('Average Waiting Time')
     plt.ylabel('# Measurements')
     plt.legend()
-    plt.ylim(0, 1)
-    plt.xlim(0, 10)
+    # plt.xlim(0, 10)
     plt.savefig(f"M-{srd}-FIFO.png")
     # plt.show()
     plt.cla()
