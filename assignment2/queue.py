@@ -71,77 +71,148 @@ def job(env, id, server, srd, shortest_job_first):
 NUM_REQUESTS = 1000
 ARRIVAL_RATE = 1  # mean job arrival interval, once every [x] seconds
 SERVICE_TIME = 0.9  # mean job service time, comleted after [x] seconds
-repetitions = 500
+repetitions = 1000
 
 # Part 2 and 3 of assignment
-for sjf in [False, True]:
-    print(f"sjf: {sjf}")
+sjf = False
+print(f"sjf: {sjf}")
 
-    for n in [1, 2, 4]:
-        print(f"\r------------ n = {n} -------------")
-        average_waiting_times = []
-        arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
+for n in [1, 2, 4]:
+    print(f"\r------------ n = {n} -------------")
+    average_waiting_times = []
+    arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
 
-        for i in tqdm(range(repetitions)):
-            waiting_times = []
+    for i in tqdm(range(repetitions)):
+        waiting_times = []
 
-            env = simpy.Environment()
-            server = Server(env, n, shortest_job_first=sjf)
-            env.process(job_generator(env, server, arrival_rate, shortest_job_first=sjf))
-            env.run()
+        env = simpy.Environment()
+        server = Server(env, n, shortest_job_first=sjf)
+        env.process(job_generator(env, server, arrival_rate, shortest_job_first=sjf))
+        env.run()
 
-            # print(waiting_times)
+        # print(waiting_times)
 
-            average_waiting_times.append(np.mean(waiting_times))
+        average_waiting_times.append(np.mean(waiting_times))
 
-        sns.distplot(np.array(average_waiting_times), label=f'n={n}')
-        mean = np.mean(average_waiting_times)
-        var = np.var(average_waiting_times)
-        print(f"Mean waiting time: {mean:.2f}")
-        print(f"Variance waiting times: {var:.2f}")
-        rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
-        print(f"recommended N: {rec_N}")
+    sns.distplot(np.array(average_waiting_times), label=f'n={n}')
+    mean = np.mean(average_waiting_times)
+    var = np.var(average_waiting_times)
+    print(f"Mean waiting time: {mean:.2f}")
+    print(f"Variance waiting times: {var:.2f}")
+    rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
+    print(f"recommended N: {rec_N}")
 
-    plt.xlabel('Average Waiting Time')
-    plt.ylabel('# Measurements')
-    plt.legend()
-    # plt.xlim(0, 10)
-    plt.savefig(f"M-M-{'SJF' if sjf else 'FIFO'}.png")
-    # plt.show()
-    plt.cla()
+plt.xlabel('Average Waiting Time')
+plt.ylabel('# Measurements')
+plt.legend()
+plt.xlim(0, 20)
+plt.savefig(f"M-M-{'SJF' if sjf else 'FIFO'}.png")
+# plt.show()
+plt.cla()
 
+
+sjf = True
+print(f"sjf: {sjf}")
+
+for n in [1, 2, 4]:
+    print(f"\r------------ n = {n} -------------")
+    average_waiting_times = []
+    arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
+
+    for i in tqdm(range(repetitions)):
+        waiting_times = []
+
+        env = simpy.Environment()
+        server = Server(env, n, shortest_job_first=sjf)
+        env.process(job_generator(env, server, arrival_rate, shortest_job_first=sjf))
+        env.run()
+
+        # print(waiting_times)
+
+        average_waiting_times.append(np.mean(waiting_times))
+
+    sns.distplot(np.array(average_waiting_times), label=f'n={n}')
+    mean = np.mean(average_waiting_times)
+    var = np.var(average_waiting_times)
+    print(f"Mean waiting time: {mean:.2f}")
+    print(f"Variance waiting times: {var:.2f}")
+    rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
+    print(f"recommended N: {rec_N}")
+
+plt.xlabel('Average Waiting Time')
+plt.ylabel('# Measurements')
+plt.legend()
+plt.xlim(0, 8)
+plt.savefig(f"M-M-{'SJF' if sjf else 'FIFO'}.png")
+# plt.show()
+plt.cla()
 
 # Part 4 of assignment
-for srd in ['D', 'E']:
-    print(f"srd: {srd}")
+srd = 'D'
+print(f"srd: {srd}")
 
-    for n in [1, 2, 4]:
-        print(f"\r------------ n = {n} -------------")
-        arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
-        average_waiting_times = []
+for n in [1, 2, 4]:
+    print(f"\r------------ n = {n} -------------")
+    arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
+    average_waiting_times = []
 
-        for i in tqdm(range(repetitions)):
-            waiting_times = []
+    for i in tqdm(range(repetitions)):
+        waiting_times = []
 
-            env = simpy.Environment()
-            server = Server(env, n)
-            env.process(job_generator(env, server, arrival_rate, service_rate_distribution=srd))
-            env.run()
+        env = simpy.Environment()
+        server = Server(env, n)
+        env.process(job_generator(env, server, arrival_rate, service_rate_distribution=srd))
+        env.run()
 
-            average_waiting_times.append(np.mean(waiting_times))
+        average_waiting_times.append(np.mean(waiting_times))
 
-        sns.distplot(np.array(average_waiting_times), label=f'n={n}')
-        mean = np.mean(average_waiting_times)
-        var = np.var(average_waiting_times)
-        print(f"Mean waiting time: {mean:.2f}")
-        print(f"Variance waiting times: {var:.2f}")
-        rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
-        print(f"recommended N: {rec_N}")
+    sns.distplot(np.array(average_waiting_times), label=f'n={n}')
+    mean = np.mean(average_waiting_times)
+    var = np.var(average_waiting_times)
+    print(f"Mean waiting time: {mean:.2f}")
+    print(f"Variance waiting times: {var:.2f}")
+    rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
+    print(f"recommended N: {rec_N}")
 
-    plt.xlabel('Average Waiting Time')
-    plt.ylabel('# Measurements')
-    plt.legend()
-    # plt.xlim(0, 10)
-    plt.savefig(f"M-{srd}-FIFO.png")
-    # plt.show()
-    plt.cla()
+plt.xlabel('Average Waiting Time')
+plt.ylabel('# Measurements')
+plt.legend()
+plt.xlim(0, 10)
+plt.savefig(f"M-{srd}-FIFO.png")
+# plt.show()
+plt.cla()
+
+
+srd = 'E'
+print(f"srd: {srd}")
+
+for n in [1, 2, 4]:
+    print(f"\r------------ n = {n} -------------")
+    arrival_rate = ARRIVAL_RATE * n  # scale with number of servers, to keep system load (rho) equal
+    average_waiting_times = []
+
+    for i in tqdm(range(repetitions)):
+        waiting_times = []
+
+        env = simpy.Environment()
+        server = Server(env, n)
+        env.process(job_generator(env, server, arrival_rate, service_rate_distribution=srd))
+        env.run()
+
+        average_waiting_times.append(np.mean(waiting_times))
+
+    sns.distplot(np.array(average_waiting_times), label=f'n={n}')
+    mean = np.mean(average_waiting_times)
+    var = np.var(average_waiting_times)
+    print(f"Mean waiting time: {mean:.2f}")
+    print(f"Variance waiting times: {var:.2f}")
+    rec_N = 4 * (1.96**2 * var) / (0.01 * mean ** 2)
+    print(f"recommended N: {rec_N}")
+
+plt.xlabel('Average Waiting Time')
+plt.ylabel('# Measurements')
+plt.legend()
+plt.xlim(0, 40)
+plt.savefig(f"M-{srd}-FIFO.png")
+# plt.show()
+plt.cla()
