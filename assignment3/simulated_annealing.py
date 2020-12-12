@@ -1,5 +1,4 @@
 import pickle
-from copy import deepcopy
 
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -37,13 +36,11 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
     if two_opt_first:
         # print('applying 2-opt to intersections...')
         ts.two_opt()
-        # ts.after_two_opt = deepcopy(ts.graph)
         total_distances.append(ts.get_total_distance())
         # print("distance after 2-opt:", total_distances[1])
 
     for i, T in enumerate(Ts):
         for _ in range(int(markov_chain_length)):
-            # ts_before_copy = deepcopy(ts.graph)
             before_length = ts.get_total_distance()
 
             if method == 'switch':
@@ -184,7 +181,7 @@ if __name__ == '__main__':
     if not os.path.exists('results'):
         os.mkdir('results')
 
-    cProfile.run('simulated_annealing(Ts, markov_chain_length)', sort='cumtime')
+    # cProfile.run('simulated_annealing(Ts, markov_chain_length)', sort='cumtime')
 
     # test_scheduling_strategies()
     # test_starting_temp()

@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from shapely.geometry import LineString
-from copy import deepcopy
 
 
 class Node:
@@ -32,8 +31,6 @@ class TravellingSalesman:
         self.nodes = nodes
         self.number_of_nodes = len(nodes)
         self.graph = self._construct_graph()
-        self.init_graph = deepcopy(self.graph)
-        self.after_two_opt = None
 
         self.positions = {}
         for node_id in self.graph.nodes:
@@ -121,13 +118,7 @@ class TravellingSalesman:
                 break
 
     def _validate(self):
-        if nx.is_connected(self.graph):
-            for i in self.graph.nodes():
-                if len(self.graph[i]) != 2:
-                    break
-            return True
-
-        return False
+        return nx.is_connected(self.graph)
 
     def _switch_edges(self, a, b, c, d, revert=False):
         b, c = (c, b) if revert else (b, c)
