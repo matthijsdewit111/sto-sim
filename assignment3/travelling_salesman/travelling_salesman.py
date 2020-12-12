@@ -71,6 +71,8 @@ class TravellingSalesman:
             valid = self._validate()
             if not valid:
                 self._switch_edges(a, b, c, d, revert=True)
+        
+        return a, b, c, d
 
     def move(self):
         valid = False
@@ -86,6 +88,8 @@ class TravellingSalesman:
             valid = self._validate()
             if not valid:
                 self._move_node(a, b, c, revert=True)
+        
+        return a, b, c
 
     def two_opt(self, n=1000):
         for _ in range(n):

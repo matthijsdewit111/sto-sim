@@ -37,19 +37,19 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
     if two_opt_first:
         # print('applying 2-opt to intersections...')
         ts.two_opt()
-        ts.after_two_opt = deepcopy(ts.graph)
+        # ts.after_two_opt = deepcopy(ts.graph)
         total_distances.append(ts.get_total_distance())
         # print("distance after 2-opt:", total_distances[1])
 
-    for T in Ts:
+    for i, T in enumerate(Ts):
         for _ in range(int(markov_chain_length)):
-            ts_before_copy = deepcopy(ts.graph)
+            # ts_before_copy = deepcopy(ts.graph)
             before_length = ts.get_total_distance()
 
             if method == 'switch':
-                ts.switch()
+                a, b, c, d = ts.switch()
             elif method == 'move':
-                ts.move()
+                a, b, c = ts.move()
             else:
                 raise Exception('invalid method')
 
@@ -59,7 +59,10 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
                 p = np.exp(-(after_length - before_length) / T)
                 r = random.random()
                 if r > p:
-                    ts.graph = ts_before_copy
+                    if method == 'switch':
+                        ts._switch_edges(a, b, c, d, revert=True)
+                    elif method == 'move':
+                        ts._move_node(a, b, c, revert=True)
 
         total_distances.append(ts.get_total_distance())
 
@@ -84,13 +87,13 @@ def test_scheduling_strategies():
     for _ in tqdm(range(repetitions)):
         _, total_distances_lin = simulated_annealing(Ts_lin, markov_chain_length)
         lin_results.append(total_distances_lin)
-        
+
         _, total_distances_log = simulated_annealing(Ts_log, markov_chain_length)
         log_results.append(total_distances_log)
-        
+
         _, total_distances_lin_staged = simulated_annealing(Ts_lin_staged, markov_chain_length)
         lin_staged_results.append(total_distances_lin_staged)
-        
+
         _, total_distances_log_mod = simulated_annealing(TS_log_modified, markov_chain_length)
         log_mod_results.append(total_distances_log_mod)
 
@@ -181,7 +184,7 @@ if __name__ == '__main__':
     if not os.path.exists('results'):
         os.mkdir('results')
 
-    cProfile.run('simulated_annealing(Ts, markov_chain_length)')
+    cProfile.run('simulated_annealing(Ts, markov_chain_length)', sort='cumtime')
 
     # test_scheduling_strategies()
     # test_starting_temp()
