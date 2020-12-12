@@ -1,8 +1,12 @@
-import networkx as nx
-import matplotlib.pyplot as plt
-import numpy as np
 import random
+from itertools import combinations
+
+import matplotlib.pyplot as plt
+import networkx as nx
+import numpy as np
 from shapely.geometry import LineString
+from tqdm import tqdm
+from copy import deepcopy
 
 
 class Node:
@@ -29,6 +33,8 @@ class TravellingSalesman:
         self.nodes = nodes
         self.number_of_nodes = len(nodes)
         self.graph = self._construct_graph()
+        self.init_graph = deepcopy(self.graph)
+        self.after_two_opt = None
 
         self.positions = {}
         for node_id in self.graph.nodes:
@@ -57,34 +63,68 @@ class TravellingSalesman:
 
         return graph
 
-    def two_opt(self, n=10000):
-        for _ in range(n):
-            edges = list(self.graph.edges)
-            edge1 = random.choice(edges)
-            edge2 = random.choice(edges)
-            if edge1 == edge2:
-                continue
-            a, b, c, d = edge1[0], edge1[1], edge2[0], edge2[1]
-            node_a, node_b, node_c, node_d = self.nodes[a], self.nodes[b], self.nodes[c], self.nodes[d]
+    def switch(self):
+        valid = False
 
-            line_ab = LineString([node_a.pos, node_b.pos])
-            line_cd = LineString([node_c.pos, node_d.pos])
-            line_ac = LineString([node_a.pos, node_c.pos])
-            line_bd = LineString([node_b.pos, node_d.pos])
+        while not valid:
+            (a, b), (c, d) = random.sample(self.graph.edges, 2)
+            self._switch_edges(a, b, c, d)
+            valid = self._validate()
+            if not valid:
+                self._switch_edges(a, b, c, d, revert=True)
 
-            if line_ab.intersects(line_cd):
-                if line_ab.length + line_cd.length > line_ac.length + line_bd.length:
-                    self._switch_edges(a, b, c, d)
-                    self._validate_graph(a, b, c, d)
+    def move(self):
+        valid = False
 
-    def _validate_graph(self, a, b, c, d):
+        while not valid:
+            a = random.choice(self.nodes).id
+            b = a
+            c = a
+            while b == a or c == a:
+                b, c = random.choice(list(self.graph.edges))
+
+            self._move_node(a, b, c)
+            valid = self._validate()
+            if not valid:
+                self._move_node(a, b, c, revert=True)
+
+    def two_opt(self, n=1000):
+        for _ in tqdm(range(n)):
+            changed = False
+
+            every_edge_combination = list(combinations(self.graph.edges, 2))
+            random.shuffle(every_edge_combination)
+
+            for (a, b), (c, d) in every_edge_combination:
+                node_a, node_b, node_c, node_d = self.nodes[a], self.nodes[b], self.nodes[c], self.nodes[d]
+
+                line_ab = LineString([node_a.pos, node_b.pos])
+                line_cd = LineString([node_c.pos, node_d.pos])
+                line_ac = LineString([node_a.pos, node_c.pos])
+                line_bd = LineString([node_b.pos, node_d.pos])
+
+                if line_ab.intersects(line_cd):
+                    if line_ab.length + line_cd.length > line_ac.length + line_bd.length:
+                        self._switch_edges(a, b, c, d)
+                        valid = self._validate()
+                        if valid:
+                            changed = True
+                            break
+                        else:
+                            self._switch_edges(a, b, c, d, revert=True)
+
+            if not changed:
+                print('no intersecting edges can be changed')
+                break
+
+    def _validate(self):
         if nx.is_connected(self.graph):
             for i in self.graph.nodes():
                 if len(self.graph[i]) != 2:
-                    self._switch_edges(a, b, c, d, revert=True)  # undo switch
                     break
-        else:
-            self._switch_edges(a, b, c, d, revert=True)  # undo switch
+            return True
+
+        return False
 
     def _switch_edges(self, a, b, c, d, revert=False):
         b, c = (c, b) if revert else (b, c)
@@ -93,6 +133,23 @@ class TravellingSalesman:
             self.graph.remove_edge(c, d)
             self.graph.add_edge(a, c, distance=Node.get_distance_between_nodes(self.nodes[a], self.nodes[c]))
             self.graph.add_edge(b, d, distance=Node.get_distance_between_nodes(self.nodes[b], self.nodes[d]))
+
+    def _move_node(self, a, b, c, revert=False):
+        if revert:
+            a_n1 = b
+            a_n2 = c
+            b, c = self.graph.neighbors(a)
+        else:
+            a_n1, a_n2 = self.graph.neighbors(a)
+        
+        self.graph.remove_edge(a, a_n1)
+        self.graph.remove_edge(a, a_n2)
+        self.graph.remove_edge(b, c)
+        self.graph.add_edge(a_n1, a_n2, distance=Node.get_distance_between_nodes(self.nodes[a_n1], self.nodes[a_n2]))
+        self.graph.add_edge(a, b, distance=Node.get_distance_between_nodes(self.nodes[a], self.nodes[b]))
+        self.graph.add_edge(a, c, distance=Node.get_distance_between_nodes(self.nodes[a], self.nodes[c]))
+
+
 
     def get_total_distance(self):
         return sum([edge[2]['distance'] for edge in self.graph.edges(data=True)])
