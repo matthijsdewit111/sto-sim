@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from shapely.geometry import LineString
-from tqdm import tqdm
 from copy import deepcopy
 
 
@@ -19,13 +18,13 @@ class Node:
     def get_distance_between_nodes(node1, node2):
         return np.linalg.norm(np.subtract(node1.pos, node2.pos))
 
-    @classmethod
-    def from_listofstrings(cls, data):
-        return cls(*tuple(map(lambda n: int(float(n)), data)))
-
     @property
     def pos(self):
         return self.x, self.y
+
+
+def from_listofstrings(data):
+    return Node(*tuple(map(lambda n: int(float(n)), data)))
 
 
 class TravellingSalesman:
@@ -89,7 +88,7 @@ class TravellingSalesman:
                 self._move_node(a, b, c, revert=True)
 
     def two_opt(self, n=1000):
-        for _ in tqdm(range(n)):
+        for _ in range(n):
             changed = False
 
             every_edge_combination = list(combinations(self.graph.edges, 2))
@@ -114,7 +113,7 @@ class TravellingSalesman:
                             self._switch_edges(a, b, c, d, revert=True)
 
             if not changed:
-                print('no intersecting edges can be changed')
+                # print('no intersecting edges can be changed')
                 break
 
     def _validate(self):
