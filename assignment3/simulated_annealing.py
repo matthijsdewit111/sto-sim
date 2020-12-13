@@ -1,4 +1,5 @@
 import pickle
+from copy import deepcopy
 
 import matplotlib.pyplot as plt
 from tqdm import tqdm
@@ -46,7 +47,7 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
             if method == 'switch':
                 a, b, c, d = ts.switch()
             elif method == 'move':
-                a, b, c = ts.move()
+                a, b, c, a_n1, a_n2 = ts.move()
             else:
                 raise Exception('invalid method')
 
@@ -59,10 +60,12 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
                     if method == 'switch':
                         ts._switch_edges(a, b, c, d, revert=True)
                     elif method == 'move':
-                        ts._move_node(a, b, c, revert=True)
+                        ts._move_node(a, b, c, a_n1, a_n2, revert=True)
 
         total_distances.append(ts.get_total_distance())
 
+    # print("final distance:", total_distances[-1])
+    return ts, total_distances
     # print("final distance:", total_distances[-1])
     return ts, total_distances
 
@@ -73,7 +76,7 @@ def test_scheduling_strategies():
     Ts_lin_staged = np.hstack((np.linspace(50, 2, 50), np.linspace(1, 0.1, 50)))  # 100 to 2 and 1 to 0.1
     TS_log_modified = [20 / np.log(n + 1.5) - 4.3 for n in range(0, 100)]
 
-    markov_chain_length = 1000
+    markov_chain_length = 100
 
     lin_results = []
     log_results = []
@@ -101,7 +104,7 @@ def test_scheduling_strategies():
 
 
 def test_starting_temp():
-    markov_chain_length = 1000
+    markov_chain_length = 100
 
     init_temp_powers = [2, 1.8, 1.5, 1, 0]
 
@@ -120,7 +123,7 @@ def test_starting_temp():
 def test_markov_chain_length():
     Ts = np.logspace(1.5, -2, 100)
 
-    chain_lenghts = np.logspace(4, 2, 7)
+    chain_lenghts = np.logspace(3, 2, 4)
 
     markov_results = [[], [], [], [], [], [], []]
 
@@ -135,7 +138,7 @@ def test_markov_chain_length():
 
 def test_reorder_methods():
     Ts = np.logspace(1.5, -2, 100)
-    markov_chain_length = 1000
+    markov_chain_length = 100
 
     switch_results = []
     move_results = []
@@ -153,7 +156,7 @@ def test_reorder_methods():
 
 def test_two_opt_first():
     Ts = np.logspace(1, -2, 100)
-    markov_chain_length = 1000
+    markov_chain_length = 100
 
     two_opt_results = []
 
@@ -181,10 +184,8 @@ if __name__ == '__main__':
     if not os.path.exists('results'):
         os.mkdir('results')
 
-    # cProfile.run('simulated_annealing(Ts, markov_chain_length)', sort='cumtime')
-
     # test_scheduling_strategies()
     # test_starting_temp()
     # test_markov_chain_length()
-    # test_reorder_methods()
+    test_reorder_methods()
     # test_two_opt_first()

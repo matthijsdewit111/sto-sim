@@ -41,7 +41,7 @@ def job(env, id, server, srd, shortest_job_first):
         t = random.expovariate(1 / SERVICE_TIME)  # mean = ST
     elif srd == 'D':
         t = SERVICE_TIME
-    elif srd == 'H':
+    elif srd == 'E':
         d = random.random()
         if d < 0.75:  # 0.75 * 0.5ST + 0.25 * 2.5ST = 1ST (combined mean = ST)
             t = random.expovariate(2/SERVICE_TIME)  # mean = 0.5 * ST
@@ -183,7 +183,7 @@ plt.savefig(f"M-{srd}-FIFO.png")
 plt.cla()
 
 
-srd = 'H'
+srd = 'E'
 print(f"srd: {srd}")
 
 for n in [1, 2, 4]:

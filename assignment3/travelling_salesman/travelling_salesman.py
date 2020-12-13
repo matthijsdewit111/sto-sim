@@ -68,7 +68,7 @@ class TravellingSalesman:
             valid = self._validate()
             if not valid:
                 self._switch_edges(a, b, c, d, revert=True)
-        
+
         return a, b, c, d
 
     def move(self):
@@ -81,12 +81,14 @@ class TravellingSalesman:
             while b == a or c == a:
                 b, c = random.choice(list(self.graph.edges))
 
-            self._move_node(a, b, c)
+            a_n1, a_n2 = self.graph.neighbors(a)
+
+            self._move_node(a, b, c, a_n1, a_n2)
             valid = self._validate()
             if not valid:
-                self._move_node(a, b, c, revert=True)
-        
-        return a, b, c
+                self._move_node(a, b, c, a_n1, a_n2, revert=True)
+
+        return a, b, c, a_n1, a_n2
 
     def two_opt(self, n=1000):
         for _ in range(n):
@@ -128,22 +130,18 @@ class TravellingSalesman:
             self.graph.add_edge(a, c, distance=Node.get_distance_between_nodes(self.nodes[a], self.nodes[c]))
             self.graph.add_edge(b, d, distance=Node.get_distance_between_nodes(self.nodes[b], self.nodes[d]))
 
-    def _move_node(self, a, b, c, revert=False):
+    def _move_node(self, a, b, c, a_n1, a_n2, revert=False):
         if revert:
-            a_n1 = b
-            a_n2 = c
-            b, c = self.graph.neighbors(a)
-        else:
-            a_n1, a_n2 = self.graph.neighbors(a)
-        
+            tmp_b, tmp_c = b, c
+            b, c = a_n1, a_n2
+            a_n1, a_n2 = tmp_b, tmp_c
+
         self.graph.remove_edge(a, a_n1)
         self.graph.remove_edge(a, a_n2)
         self.graph.remove_edge(b, c)
         self.graph.add_edge(a_n1, a_n2, distance=Node.get_distance_between_nodes(self.nodes[a_n1], self.nodes[a_n2]))
         self.graph.add_edge(a, b, distance=Node.get_distance_between_nodes(self.nodes[a], self.nodes[b]))
         self.graph.add_edge(a, c, distance=Node.get_distance_between_nodes(self.nodes[a], self.nodes[c]))
-
-
 
     def get_total_distance(self):
         return sum([edge[2]['distance'] for edge in self.graph.edges(data=True)])
