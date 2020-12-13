@@ -82,7 +82,6 @@ class TravellingSalesman:
                 b, c = random.choice(list(self.graph.edges))
 
             a_n1, a_n2 = self.graph.neighbors(a)
-
             self._move_node(a, b, c, a_n1, a_n2)
             valid = self._validate()
             if not valid:
