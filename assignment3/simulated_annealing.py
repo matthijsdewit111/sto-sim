@@ -46,7 +46,7 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
             if method == 'switch':
                 a, b, c, d = ts.switch()
             elif method == 'move':
-                a, b, c = ts.move()
+                a, b, c, a_n1, a_n2 = ts.move()
             else:
                 raise Exception('invalid method')
 
@@ -59,7 +59,7 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
                     if method == 'switch':
                         ts._switch_edges(a, b, c, d, revert=True)
                     elif method == 'move':
-                        ts._move_node(a, b, c, revert=True)
+                        ts._move_node(a, b, c, a_n1, a_n2, revert=True)
 
         total_distances.append(ts.get_total_distance())
 
