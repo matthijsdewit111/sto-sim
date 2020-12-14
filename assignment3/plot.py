@@ -46,7 +46,7 @@ def plot_starting_temp():
         mean = np.mean(starting_temp_results[i], axis=0)
         std = np.std(starting_temp_results[i], axis=0)
 
-        plt.plot(mean, label=str(10**temp_power))
+        plt.plot(mean, label=str(int(10**temp_power)))
         plt.fill_between(range(101), mean + std, mean - std, alpha=0.5)
     
     plt.xlim(0, 100)
@@ -66,7 +66,7 @@ def plot_markov_chain_length():
         mean = np.mean(markov_results[i], axis=0)
         std = np.std(markov_results[i], axis=0)
 
-        plt.plot(mean, label=str(chain_length))
+        plt.plot(mean, label=str(int(chain_length)))
         plt.fill_between(range(101), mean + std, mean - std, alpha=0.5)
     
     plt.xlim(0, 100)
