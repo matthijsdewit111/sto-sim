@@ -123,13 +123,13 @@ def test_starting_temp():
 def test_markov_chain_length():
     Ts = np.logspace(1.5, -2, 100)
 
-    chain_lenghts = np.logspace(3, 2, 4)
+    chain_lengths = np.logspace(3, 2, 4)
 
-    markov_results = [[], [], [], [], [], [], []]
+    markov_results = [[], [], [], []]
 
     repetitions = 100
     for _ in tqdm(range(repetitions)):
-        for i, markov_chain_length in enumerate(chain_lenghts):
+        for i, markov_chain_length in enumerate(chain_lengths):
             _, total_distances = simulated_annealing(Ts, markov_chain_length)
             markov_results[i].append(total_distances)
 
