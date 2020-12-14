@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 def plot_cooling_schedules():
-    lin_results = pickle.load(open('lin_results.pkl', 'rb'))
-    log_results = pickle.load(open('log_results.pkl', 'rb'))
-    lin_staged_results = pickle.load(open('lin_staged_results.pkl', 'rb'))
-    log_mod_results = pickle.load(open('log_mod_results.pkl', 'rb'))
+    lin_results = pickle.load(open('results/lin_results.pkl', 'rb'))
+    log_results = pickle.load(open('results/log_results.pkl', 'rb'))
+    lin_staged_results = pickle.load(open('results/lin_staged_results.pkl', 'rb'))
+    log_mod_results = pickle.load(open('results/log_mod_results.pkl', 'rb'))
 
     lin_mean = np.mean(lin_results, axis=0)
     lin_std = np.std(lin_results, axis=0)
@@ -29,13 +29,16 @@ def plot_cooling_schedules():
     plt.plot(log_mod_mean, label='log (modified)')
     plt.fill_between(range(101), log_mod_mean + log_mod_std, log_mod_mean - log_mod_std, alpha=0.5)
 
+    plt.xlim(0, 100)
+    plt.xlabel('# steps')
+    plt.ylabel('Path length')
     plt.legend()
     plt.tight_layout()
     plt.plot()
     plt.show()
 
 def plot_starting_temp():
-    starting_temp_results = pickle.load(open('starting_temp_results.pkl', 'rb'))
+    starting_temp_results = pickle.load(open('results/starting_temp_results.pkl', 'rb'))
 
     init_temp_powers = [2, 1.8, 1.5,  1, 0]
 
@@ -46,23 +49,29 @@ def plot_starting_temp():
         plt.plot(mean, label=str(10**temp_power))
         plt.fill_between(range(101), mean + std, mean - std, alpha=0.5)
     
+    plt.xlim(0, 100)
+    plt.xlabel('# steps')
+    plt.ylabel('Path length')
     plt.legend()
     plt.tight_layout()
     plt.plot()
     plt.show()
 
 def plot_markov_chain_length():
-    markov_results = pickle.load(open('markov_results.pkl', 'rb'))
+    markov_results = pickle.load(open('results/markov_results.pkl', 'rb'))
 
-    chain_lengths = np.logspace(4, 2, 7)
+    chain_lengths = np.logspace(3, 2, 4)
 
-    for i, chain_length in enumerate(chain_lengths[:-1]):
+    for i, chain_length in enumerate(chain_lengths):
         mean = np.mean(markov_results[i], axis=0)
         std = np.std(markov_results[i], axis=0)
 
         plt.plot(mean, label=str(chain_length))
         plt.fill_between(range(101), mean + std, mean - std, alpha=0.5)
     
+    plt.xlim(0, 100)
+    plt.xlabel('# steps')
+    plt.ylabel('Path length')
     plt.legend()
     plt.tight_layout()
     plt.plot()
@@ -70,8 +79,8 @@ def plot_markov_chain_length():
 
 
 def plot_reorder_methods():
-    switch_results = pickle.load(open('switch_results.pkl', 'rb'))
-    move_results = pickle.load(open('move_results.pkl', 'rb'))
+    switch_results = pickle.load(open('results/switch_results.pkl', 'rb'))
+    move_results = pickle.load(open('results/move_results.pkl', 'rb'))
 
     mean_switch = np.mean(switch_results, axis=0)
     std_switch = np.std(switch_results, axis=0)
@@ -83,14 +92,17 @@ def plot_reorder_methods():
     plt.plot(mean_move, label='move')
     plt.fill_between(range(101), mean_move + std_move, mean_move - std_move, alpha=0.5)
     
+    plt.xlim(0, 100)
+    plt.xlabel('# steps')
+    plt.ylabel('Path length')
     plt.legend()
     plt.tight_layout()
     plt.plot()
     plt.show()
 
 def plot_two_opt_first():
-    log_results = pickle.load(open('log_results.pkl', 'rb'))
-    two_opt_results = pickle.load(open('two_opt_results.pkl', 'rb'))
+    log_results = pickle.load(open('results/log_results.pkl', 'rb'))
+    two_opt_results = pickle.load(open('results/two_opt_results.pkl', 'rb'))
 
     mean_to = np.mean(two_opt_results, axis=0)
     std_to = np.std(two_opt_results, axis=0)
@@ -102,7 +114,9 @@ def plot_two_opt_first():
     plt.plot(log_mean, label='normal')
     plt.fill_between(range(101), log_mean + log_std, log_mean - log_std, alpha=0.5)
 
-
+    plt.xlim(0, 100)
+    plt.xlabel('# steps')
+    plt.ylabel('Path length')
     plt.legend()
     plt.tight_layout()
     plt.plot()
