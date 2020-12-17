@@ -22,19 +22,20 @@ def plot_cooling_schedules():
 
     plt.plot(lin_mean, label='lin')
     plt.fill_between(range(101), lin_mean + lin_std, lin_mean - lin_std, alpha=0.5)
-    plt.plot(log_mean, label='log')
-    plt.fill_between(range(101), log_mean + log_std, log_mean - log_std, alpha=0.5)
     plt.plot(lin_staged_mean, label='lin (staged)')
     plt.fill_between(range(101), lin_staged_mean + lin_staged_std, lin_staged_mean - lin_staged_std, alpha=0.5)
+    plt.plot(log_mean, label='log')
+    plt.fill_between(range(101), log_mean + log_std, log_mean - log_std, alpha=0.5)
     plt.plot(log_mod_mean, label='log (modified)')
     plt.fill_between(range(101), log_mod_mean + log_mod_std, log_mod_mean - log_mod_std, alpha=0.5)
 
     plt.xlim(0, 100)
     plt.xlabel('# steps')
     plt.ylabel('Path length')
-    plt.legend()
+    plt.legend(title='cooling schedule')
     plt.tight_layout()
     plt.plot()
+    plt.savefig('cooling_sched.png')
     plt.show()
 
 def plot_starting_temp():
@@ -52,9 +53,10 @@ def plot_starting_temp():
     plt.xlim(0, 100)
     plt.xlabel('# steps')
     plt.ylabel('Path length')
-    plt.legend()
+    plt.legend(title=r'$T_0$')
     plt.tight_layout()
     plt.plot()
+    plt.savefig('starting_temp.png')
     plt.show()
 
 def plot_markov_chain_length():
@@ -72,9 +74,10 @@ def plot_markov_chain_length():
     plt.xlim(0, 100)
     plt.xlabel('# steps')
     plt.ylabel('Path length')
-    plt.legend()
+    plt.legend(title='MC length')
     plt.tight_layout()
     plt.plot()
+    plt.savefig('MC_len.png')
     plt.show()
 
 
@@ -98,6 +101,7 @@ def plot_reorder_methods():
     plt.legend()
     plt.tight_layout()
     plt.plot()
+    plt.savefig('reorder-methods.png')
     plt.show()
 
 def plot_two_opt_first():
