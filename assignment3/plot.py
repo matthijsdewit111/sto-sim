@@ -114,7 +114,7 @@ def plot_two_opt_first():
     log_std = np.std(log_results, axis=0)
 
     plt.plot(mean_to, label='two-opt')
-    plt.fill_between(range(101), mean_to + std_to, mean_to - std_to, alpha=0.5)
+    plt.fill_between(range(102), mean_to + std_to, mean_to - std_to, alpha=0.5)
     plt.plot(log_mean, label='normal')
     plt.fill_between(range(101), log_mean + log_std, log_mean - log_std, alpha=0.5)
 
@@ -128,8 +128,8 @@ def plot_two_opt_first():
 
 
 if __name__ == "__main__":
-    plot_cooling_schedules()
-    plot_starting_temp()
-    plot_markov_chain_length()
-    plot_reorder_methods()
+    # plot_cooling_schedules()
+    # plot_starting_temp()
+    # plot_markov_chain_length()
+    # plot_reorder_methods()
     plot_two_opt_first()
