@@ -128,8 +128,8 @@ def plot_two_opt_first():
 
 
 if __name__ == "__main__":
-    # plot_cooling_schedules()
-    # plot_starting_temp()
-    # plot_markov_chain_length()
-    # plot_reorder_methods()
+    plot_cooling_schedules()
+    plot_starting_temp()
+    plot_markov_chain_length()
+    plot_reorder_methods()
     plot_two_opt_first()
