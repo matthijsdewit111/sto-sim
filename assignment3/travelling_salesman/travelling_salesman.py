@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from shapely.geometry import LineString
+from tqdm import tqdm
 
 
 class Node:
@@ -90,7 +91,7 @@ class TravellingSalesman:
         return a, b, c, a_n1, a_n2
 
     def two_opt(self, n=1000):
-        for _ in range(n):
+        for _ in tqdm(range(n)):
             changed = False
 
             every_edge_combination = list(combinations(self.graph.edges, 2))

@@ -27,9 +27,10 @@ def read_tsp_file(file_name: str = data_files[0]) -> [Node]:
     return nodes
 
 
-def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=False, file_name=data_files[0]):
+def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=False, file_name=data_files[0], save_graph=False):
     nodes = read_tsp_file(file_name)
     ts = TravellingSalesman(nodes)
+    tss = [deepcopy(ts)]
 
     total_distances = [ts.get_total_distance()]
     # print("starting distance:", total_distances[0])
@@ -38,9 +39,10 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
         # print('applying 2-opt to intersections...')
         ts.two_opt()
         total_distances.append(ts.get_total_distance())
+        tss.append(deepcopy(ts))
         # print("distance after 2-opt:", total_distances[1])
 
-    for i, T in enumerate(Ts):
+    for i, T in tqdm(enumerate(Ts)):
         for _ in range(int(markov_chain_length)):
             before_length = ts.get_total_distance()
 
@@ -65,9 +67,8 @@ def simulated_annealing(Ts, markov_chain_length, method='switch', two_opt_first=
         total_distances.append(ts.get_total_distance())
 
     # print("final distance:", total_distances[-1])
-    return ts, total_distances
-    # print("final distance:", total_distances[-1])
-    return ts, total_distances
+    tss.append(deepcopy(ts))
+    return tss, total_distances
 
 
 def test_scheduling_strategies():
@@ -162,10 +163,27 @@ def test_two_opt_first():
 
     repetitions = 100
     for _ in tqdm(range(repetitions)):
-        _, total_distances = simulated_annealing(Ts, markov_chain_length, method='switch')
+        _, total_distances = simulated_annealing(Ts, markov_chain_length, two_opt_first=True)
         two_opt_results.append(total_distances)
 
     pickle.dump(two_opt_results, open('results/two_opt_results.pkl', 'wb'))
+
+
+def test_best():
+    Ts = np.logspace(0, -3, 200)
+    markov_chain_length = 2500
+    best_results = []
+
+    repetitions = 1
+
+    for _ in range(repetitions):
+        tss, total_distances = simulated_annealing(Ts, markov_chain_length, two_opt_first=True, save_graph=True)
+        best_results.append(total_distances)
+
+    pickle.dump(best_results, open('results/best_results.pkl', 'wb'))
+    for ts in tss:
+        ts.draw_graph(draw_edges=True)
+
 
 
 if __name__ == '__main__':
@@ -187,5 +205,6 @@ if __name__ == '__main__':
     # test_scheduling_strategies()
     # test_starting_temp()
     # test_markov_chain_length()
-    test_reorder_methods()
+    # test_reorder_methods()
     # test_two_opt_first()
+    test_best()
